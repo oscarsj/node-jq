@@ -51,7 +51,7 @@
     "docs"
   ],
   "dependencies": {
-    "bin-build": "oscarsj/bin-build#5e32b773e428e9d565d47ae5601847849e233098",
+    "bin-build": "github:brave/bin-build#modernize",
     "is-valid-path": "^0.1.1",
     "joi": "^17.4.0",
     "node-downloader-helper": "^2.1.6",
