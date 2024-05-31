@@ -8,6 +8,9 @@ import tempfile from 'tempfile'
 import { existsSync, mkdirSync, renameSync, chmodSync } from 'fs'
 import { DownloaderHelper } from 'node-downloader-helper'
 
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
+
 async function download (url, saveDirectory) {
   const downloader = new DownloaderHelper(url, saveDirectory)
 
