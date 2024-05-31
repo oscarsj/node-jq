@@ -2,11 +2,11 @@
 
 'use strict'
 
-const binBuild = require('bin-build')
-const path = require('path')
-const tempfile = require('tempfile')
-const fs = require('fs')
-const { DownloaderHelper } = require('node-downloader-helper')
+import { url as _url } from 'bin-build'
+import { join } from 'path'
+import tempfile from 'tempfile'
+import { existsSync, mkdirSync, renameSync, chmodSync } from 'fs'
+import { DownloaderHelper } from 'node-downloader-helper'
 
 async function download (url, saveDirectory) {
   const downloader = new DownloaderHelper(url, saveDirectory)
@@ -42,22 +42,22 @@ const JQ_NAME_MAP = {
 const JQ_NAME =
   platform in JQ_NAME_MAP ? JQ_NAME_MAP[platform] : JQ_NAME_MAP.def
 
-const OUTPUT_DIR = path.join(__dirname, '..', 'bin')
+const OUTPUT_DIR = join(__dirname, '..', 'bin')
 
 const fileExist = (path) => {
   try {
-    return fs.existsSync(path)
+    return existsSync(path)
   } catch (err) {
     return false
   }
 }
 
-if (!fs.existsSync(OUTPUT_DIR)) {
-  fs.mkdirSync(OUTPUT_DIR)
+if (!existsSync(OUTPUT_DIR)) {
+  mkdirSync(OUTPUT_DIR)
   console.info(`${OUTPUT_DIR} directory was created`)
 }
 
-if (fileExist(path.join(OUTPUT_DIR, JQ_NAME))) {
+if (fileExist(join(OUTPUT_DIR, JQ_NAME))) {
   console.log('jq is already installed')
   process.exit(0)
 }
@@ -93,13 +93,13 @@ if (platform in DOWNLOAD_MAP && arch in DOWNLOAD_MAP[platform]) {
   console.log(`Downloading jq from ${url}`)
   download(url, OUTPUT_DIR)
     .then(() => {
-      const distPath = path.join(OUTPUT_DIR, JQ_NAME)
-      fs.renameSync(path.join(OUTPUT_DIR, filename), distPath)
+      const distPath = join(OUTPUT_DIR, JQ_NAME)
+      renameSync(join(OUTPUT_DIR, filename), distPath)
       if (fileExist(distPath)) {
         // fs.chmodSync(distPath, fs.constants.S_IXUSR || 0o100)
         // Huan(202111): we need the read permission so that the build system can pack the node_modules/ folder,
         // i.e. build with Heroku CI/CD, docker build, etc.
-        fs.chmodSync(distPath, 0o755)
+        chmodSync(distPath, 0o755)
       }
       console.log(`Downloaded in ${OUTPUT_DIR}`)
     })
@@ -113,8 +113,7 @@ if (platform in DOWNLOAD_MAP && arch in DOWNLOAD_MAP[platform]) {
   const url = `${JQ_INFO.url}/${JQ_INFO.version}/${JQ_INFO.version}.tar.gz`
 
   console.log(`Building jq from ${url}`)
-  binBuild
-    .url(url, [
+  _url(url, [
       `./configure --with-oniguruma=builtin --prefix=${tempfile()} --bindir=${OUTPUT_DIR}`,
       'make -j8',
       'make install'
