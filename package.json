@@ -4,7 +4,7 @@
   "description": "Run jq in node",
   "main": "lib/jq.js",
   "repository": {
-    "type": "git",
+    "type": "module",
     "url": "https://github.com/sanack/node-jq"
   },
   "bin": {
