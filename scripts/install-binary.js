@@ -2,7 +2,7 @@
 
 'use strict'
 
-import { url as _url } from 'bin-build'
+import { url as _url } from '@localnerve/bin-build'
 import { join } from 'path'
 import tempfile from 'tempfile'
 import { existsSync, mkdirSync, renameSync, chmodSync } from 'fs'
